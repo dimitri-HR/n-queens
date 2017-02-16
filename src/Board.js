@@ -74,6 +74,54 @@
     =                 TODO: fill in these Helper Functions                    =
     =========================================================================*/
 
+    hasSingleLineConflict: function (index, arrStr) {
+      arrStr = arrStr || this.get(index).join(''); // "0100"
+      var arrNum = Number.parseInt(arrStr, 2);    // 4
+      var n = arrStr.length;
+      return !!(Math.pow(2, n-1) % arrNum);
+    },
+
+    // ROWS - run from left to right
+    // --------------------------------------------------------------
+    //
+    // test if a specific row on this board contains a conflict
+    hasRowConflictAt: function(index) {
+      return this.hasSingleLineConflict(index);
+    },
+
+    // test if any rows on this board contain conflicts
+    hasAnyRowConflicts: function() {
+      for (var index = 0; index < this.get(0).length; index++) {
+        if (this.hasRowConflictAt(index)) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    // COLUMNS - run from top to bottom
+    // --------------------------------------------------------------
+    //
+    // test if a specific column on this board contains a conflict
+    hasColConflictAt: function(index) {
+      // var arrStr = this.get(index).join('');
+      var arrStr = '';
+      for (var i = 0; i < this.get(0).length; i++) {
+        arrStr += this.get(i)[index];
+      }
+      return this.hasSingleLineConflict(index, arrStr);
+    },
+
+    // test if any columns on this board contain conflicts
+    hasAnyColConflicts: function() {
+      for (var index = 0; index < this.get(0).length; index++) {
+        if (this.hasColConflictAt(index)) {
+          return true;
+        }
+      }
+      return false;
+    },
+
     //       [0, 1, 0, 0, 0],
     //       [0, 0, 0, 1, 0],
     //       [1, 0, 0, 0, 0],
@@ -86,80 +134,6 @@
     //       [1, 0, 0, 0],
     //       [0, 0, 1, 0]
     //]
-
-
-
-    // ROWS - run from left to right
-    // --------------------------------------------------------------
-    //
-    // test if a specific row on this board contains a conflict
-    hasRowConflictAt: function(rowIndex) {
-      // this = [0, 1, 0, 0], [0, 1, 0, 0]...
-      console.log("this.attributes[rowIndex] ", this.attributes[rowIndex]);
-      var row = this.attributes[rowIndex].join(''); // => "0100"
-      console.log('row: ', row);
-      var baseRow = Number.parseInt(row, 2); // => 4
-      console.log('baseRow - ', baseRow);
-      if (baseRow > Math.pow(row.length - 1, 2)) {
-        return true;
-      }
-
-// 2^row.length-1 -> max number to compare with
-      // var  = Number.parseInt('0100', 2)
-      // -> 8, 4, 2, 1 <-
-      //   [1, 0, 0, 0] => 1000 -> 8
-
-      // iterate over row arr
-      // check if only one 1
-        // if yes - return
-
-
-      return false;
-    },
-
-// input: index
-// out: Boolean
-
-
-    // test if any rows on this board contain conflicts
-    hasAnyRowConflicts: function() {
-      console.log("This: ", this);
-      // run hasRowConflictAt on each row
-      // key = 0, 1, 2
-      for (var key in this.attributes) {
-        if (key !== 'n') {
-          if (this.hasRowConflictAt(key)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    },
-
-// this.attributes
-// {
-// this.attributes[0]
-//   0: [0,1,1,0],
-//   1: []
-// }
-
-
-
-    // COLUMNS - run from top to bottom
-    // --------------------------------------------------------------
-    //
-    // test if a specific column on this board contains a conflict
-    hasColConflictAt: function(colIndex) {
-
-      return false; // fixme
-    },
-
-    // test if any columns on this board contain conflicts
-    hasAnyColConflicts: function() {
-      return false; // fixme
-    },
-
-
 
     // Major Diagonals - go from top-left to bottom-right
     // --------------------------------------------------------------
