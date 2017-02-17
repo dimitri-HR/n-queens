@@ -76,7 +76,7 @@
 
     _hasSingleLineConflict: function (index, arrStr) {
       arrStr = arrStr || this.get(index).join(''); // "0100"
-      var arrNum = Number.parseInt(arrStr, 2);    // 4
+      var arrNum = parseInt(arrStr, 2);    // 4
       var n = arrStr.length;
       return !!(Math.pow(2, n - 1) % arrNum);
     },
@@ -91,6 +91,7 @@
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      // console.log('this.get(0)', this.get(0));
       for (var index = 0; index < this.get(0).length; index++) {
         if (this.hasRowConflictAt(index)) {
           return true;
@@ -121,23 +122,26 @@
       return false;
     },
 
-    _stringifyDiagonal: function (row, diagonal) {
+
+    _stringifyDiagonal: function (indexAtFirstRow, diagonal) {
       var col;
+      var row;
       var arrStr = '';
       var len = this.get(0).length;
 
       if (diagonal === 'major') {
         // index of the first row and col to start
-        col = row < 0 ? 0 : row;
-        row = row < 0 ? -row : 0;
+        col = indexAtFirstRow < 0 ? 0 : indexAtFirstRow;
+        row = indexAtFirstRow < 0 ? -indexAtFirstRow : 0;
         for (row, col; row < len; row++, col++) {
           arrStr += this.get(row)[col];
         }
       }
+
       if (diagonal === 'minor') {
         // index of the first row and col to start
-        col = row > len ? len - 1 : row;
-        row = row > len ? row - len : 0;
+        col = indexAtFirstRow > len ? len - 1 : indexAtFirstRow;
+        row = indexAtFirstRow > len ? indexAtFirstRow - (len - 1) : 0;
 
         for (row, col; row < len; row++, col--) {
           arrStr += this.get(row)[col];
@@ -146,6 +150,8 @@
       return arrStr;
     },
 
+
+
     // Major Diagonals - go from top-left to bottom-right
     // --------------------------------------------------------------
     //
@@ -153,7 +159,6 @@
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
       var index = majorDiagonalColumnIndexAtFirstRow;
       var arrStr = this._stringifyDiagonal(index, 'major');
-      console.log(arrStr);
       return this._hasSingleLineConflict(index, arrStr);
     },
 
@@ -170,19 +175,6 @@
       }
       return false;
     },
-
-    //       [0, 1, 0, 0, 0],
-    //       [0, 0, 0, 1, 0],
-    //       [1, 0, 0, 0, 0],
-    //       [0, 0, 1, 0, 0]
-    //       [0, 0, 0, 0, 1]
-    // *************************
-    // [
-    // -2 -1 [0, 1, 0, 0],+1,+2
-    //    -1 [0, 0, 0, 1], 1
-    //       [1, 0, 0, 0],
-    //       [0, 0, 1, 0]
-    //]
 
 
     // Minor Diagonals - go from top-right to bottom-left
